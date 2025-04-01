@@ -1,1 +1,2 @@
 # Cloud_Native_Monitoring_Application
+I have built a Cloud-Native Resource Monitoring App using Python (Flask, psutil) to track system resources. I containerized the application with Docker and deployed it on AWS EKS (Kubernetes) using ECR for image storage and Boto3 for automation. I used Docker for containerization, AWS CLI for cloud operations, and Kubernetes for orchestration. With Python scripts managing the deployment, my solution is fully automated and scalable in the cloud. 🚀
