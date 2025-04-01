@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Monitoring Dashboard</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        /* General Styling */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #2c3e50, #4ca1af);
+            color: white;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin: 20px 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .container {
+            max-width: 80%;
+            margin: auto;
+            padding: 20px;
+        }
+
+        .gauge-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .plotly-graph-div {
+            width: 45%;
+            min-width: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .plotly-graph-div:hover {
+            transform: scale(1.05);
+        }
+
+        /* Alert Message */
+        .alert {
+            font-size: 1.2rem;
+            padding: 15px;
+            background: rgba(255, 0, 0, 0.8);
+            color: white;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Real-Time System Monitoring</h1>
+
+        <!-- Gauges Section -->
+        <div class="gauge-container">
+            <div id="cpu-gauge" class="plotly-graph-div"></div>
+            <div id="mem-gauge" class="plotly-graph-div"></div>
+        </div>
+
+        {% if message %}
+        <div class="alert">{{ message }}</div>
+        {% endif %}
+    </div>
+
+    <script>
+        function createGauge(id, title, value, color) {
+            var gauge = {
+                type: "indicator",
+                mode: "gauge+number",
+                value: value,
+                title: { text: title, font: { size: 22 } },
+                gauge: {
+                    axis: { range: [0, 100], tickwidth: 2, tickcolor: "white" },
+                    bar: { color: color },
+                    steps: [
+                        { range: [0, 50], color: "#1abc9c" },
+                        { range: [50, 85], color: "#f1c40f" },
+                        { range: [85, 100], color: "#e74c3c" }
+                    ],
+                    threshold: {
+                        line: { color: "red", width: 6 },
+                        thickness: 0.8,
+                        value: value
+                    }
+                }
+            };
+
+            var layout = {
+                width: 400,
+                height: 300,
+                font: { color: "white", family: "Arial" },
+                paper_bgcolor: "rgba(0, 0, 0, 0)",
+                margin: { t: 50, b: 30, l: 20, r: 20 }
+            };
+
+            Plotly.newPlot(id, [gauge], layout);
+        }
+
+        // Render Gauges
+        createGauge('cpu-gauge', 'CPU Utilization', {{ cpu_metric }}, "#3498db");
+        createGauge('mem-gauge', 'Memory Utilization', {{ mem_metric }}, "#9b59b6");
+    </script>
+</body>
+</html>
